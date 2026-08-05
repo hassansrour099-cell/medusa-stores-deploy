@@ -1,0 +1,19 @@
+﻿# Use with: docker compose -f docker-compose.yml -f docker-compose.local.yml …
+# when store folders are still named store1-backend / store2-backend locally.
+services:
+  uc-backend:
+    build:
+      context: ../store1-backend
+      dockerfile: deploy/docker/Dockerfile.backend
+  ps-backend:
+    build:
+      context: ../store2-backend
+      dockerfile: deploy/docker/Dockerfile.backend
+  uc-storefront:
+    build:
+      context: ../store1-backend
+      dockerfile: deploy/docker/Dockerfile.storefront
+  ps-storefront:
+    build:
+      context: ../store2-backend
+      dockerfile: deploy/docker/Dockerfile.storefront

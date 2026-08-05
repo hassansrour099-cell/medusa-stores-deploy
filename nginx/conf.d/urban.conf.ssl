@@ -1,0 +1,60 @@
+# Urban Compact — storefront + API
+server {
+  listen 80;
+  server_name urban.hassansrour.me;
+
+  location /.well-known/acme-challenge/ {
+    root /var/www/certbot;
+  }
+
+  location / {
+    return 301 https://$host$request_uri;
+  }
+}
+
+server {
+  listen 443 ssl http2;
+  server_name urban.hassansrour.me;
+
+  ssl_certificate     /etc/letsencrypt/live/urban.hassansrour.me/fullchain.pem;
+  ssl_certificate_key /etc/letsencrypt/live/urban.hassansrour.me/privkey.pem;
+  include /etc/letsencrypt/options-ssl-nginx.conf;
+  ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+
+  client_max_body_size 20m;
+
+  location / {
+    proxy_pass http://uc-storefront:8000;
+    include /etc/nginx/snippets/proxy-params.conf;
+  }
+}
+
+server {
+  listen 80;
+  server_name api-urban.hassansrour.me;
+
+  location /.well-known/acme-challenge/ {
+    root /var/www/certbot;
+  }
+
+  location / {
+    return 301 https://$host$request_uri;
+  }
+}
+
+server {
+  listen 443 ssl http2;
+  server_name api-urban.hassansrour.me;
+
+  ssl_certificate     /etc/letsencrypt/live/api-urban.hassansrour.me/fullchain.pem;
+  ssl_certificate_key /etc/letsencrypt/live/api-urban.hassansrour.me/privkey.pem;
+  include /etc/letsencrypt/options-ssl-nginx.conf;
+  ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+
+  client_max_body_size 20m;
+
+  location / {
+    proxy_pass http://uc-backend:9000;
+    include /etc/nginx/snippets/proxy-params.conf;
+  }
+}

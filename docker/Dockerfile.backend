@@ -1,0 +1,30 @@
+# Medusa v2 backend — build from monorepo root (store1-backend / store2-backend)
+FROM node:20-bookworm-slim AS deps
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends python3 make g++ \
+  && rm -rf /var/lib/apt/lists/*
+WORKDIR /app
+COPY package.json package-lock.json turbo.json ./
+COPY apps/backend/package.json ./apps/backend/
+COPY apps/storefront/package.json ./apps/storefront/
+RUN npm ci --omit=dev=false
+
+FROM deps AS builder
+COPY apps/backend ./apps/backend
+WORKDIR /app/apps/backend
+ENV NODE_ENV=production
+RUN npm run build
+
+FROM node:20-bookworm-slim AS runner
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends curl \
+  && rm -rf /var/lib/apt/lists/*
+WORKDIR /app
+ENV NODE_ENV=production
+ENV PORT=9000
+COPY --from=builder /app /app
+WORKDIR /app/apps/backend
+EXPOSE 9000
+HEALTHCHECK --interval=30s --timeout=5s --start-period=90s --retries=5 \
+  CMD curl -fsS "http://127.0.0.1:${PORT}/health" || exit 1
+CMD ["npm", "run", "start"]
