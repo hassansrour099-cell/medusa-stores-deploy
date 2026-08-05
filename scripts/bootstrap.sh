@@ -10,7 +10,7 @@ UC_DIR="${DEPLOY_ROOT}/urban-compact"
 PS_DIR="${DEPLOY_ROOT}/performance-street"
 UC_REPO="${UC_REPO:-https://github.com/hassansrour099-cell/urban-compact-store.git}"
 PS_REPO="${PS_REPO:-https://github.com/hassansrour099-cell/performance-street-store.git}"
-DEPLOY_REPO="${DEPLOY_REPO:-}"
+DEPLOY_REPO="${DEPLOY_REPO:-https://github.com/hassansrour099-cell/medusa-stores-deploy.git}"
 
 echo "==> Bootstrap medusa-stores on $(hostname) at ${DEPLOY_ROOT}"
 
@@ -65,9 +65,11 @@ else
   git -C "${PS_DIR}" pull --ff-only || true
 fi
 
-# Deploy pack may already be present (rsync/scp). Optional git clone.
-if [[ -n "${DEPLOY_REPO}" && ! -f "${DEPLOY_DIR}/docker-compose.yml" ]]; then
+if [[ ! -f "${DEPLOY_DIR}/docker-compose.yml" ]]; then
+  echo "==> Cloning deploy pack"
   git clone --depth 1 "${DEPLOY_REPO}" "${DEPLOY_DIR}"
+else
+  git -C "${DEPLOY_DIR}" pull --ff-only || true
 fi
 
 if [[ ! -f "${DEPLOY_DIR}/docker-compose.yml" ]]; then
