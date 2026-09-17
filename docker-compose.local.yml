@@ -1,5 +1,5 @@
 ﻿# Use with: docker compose -f docker-compose.yml -f docker-compose.local.yml …
-# when store folders are still named store1-backend / store2-backend locally.
+# when store folders are still named store1-backend / store2-backend / store3-backend locally.
 services:
   uc-backend:
     build:
@@ -9,6 +9,10 @@ services:
     build:
       context: ../store2-backend
       dockerfile: deploy/docker/Dockerfile.backend
+  nx-backend:
+    build:
+      context: ../store3-backend
+      dockerfile: deploy/docker/Dockerfile.backend
   uc-storefront:
     build:
       context: ../store1-backend
@@ -16,4 +20,8 @@ services:
   ps-storefront:
     build:
       context: ../store2-backend
+      dockerfile: deploy/docker/Dockerfile.storefront
+  nx-storefront:
+    build:
+      context: ../store3-backend
       dockerfile: deploy/docker/Dockerfile.storefront

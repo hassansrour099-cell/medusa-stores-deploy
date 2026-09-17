@@ -1,0 +1,7 @@
+.env
+.env.admin
+node_modules/
+certbot/conf/
+certbot/www/
+*.log
+.contabo-password

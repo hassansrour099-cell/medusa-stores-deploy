@@ -2,6 +2,7 @@
 set -euo pipefail
 
 # First-boot Contabo VPS setup for Urban Compact + Performance Street
+# NEXUS is opt-in later — see README "Adding NEXUS" (Compose profile nexus).
 # Run as root: bash /opt/medusa-stores/deploy/scripts/bootstrap.sh
 
 DEPLOY_ROOT="${DEPLOY_ROOT:-/opt/medusa-stores}"
@@ -114,4 +115,5 @@ echo "  1) Point DNS A records to this server"
 echo "  2) Create publishable API keys in each admin, set UC_PUBLISHABLE_KEY / PS_PUBLISHABLE_KEY"
 echo "  3) Rebuild storefronts: docker compose up -d --build uc-storefront ps-storefront"
 echo "  4) Run: bash scripts/setup-ssl.sh"
+echo "  5) Optional NEXUS: see README (git clone nexus-store → profile nexus → setup-nexus-ssl.sh)"
 docker compose ps
